@@ -61,6 +61,9 @@ public class PurgeTask {
     }
 
     private void scheduleDelete(Island island) {
+        if (island.isDeleted()) {
+            return;
+        }
         if (
                 Optional.ofNullable(island.getOwner())
                         .map(Bukkit::getOfflinePlayer)

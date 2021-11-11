@@ -1,0 +1,11 @@
+enabled-modes: []
+offline-days-until-purge: 7
+check-islands-ticks: 300
+ticks-per-island-deleted: 10
+spawn-location:
+  world: world
+  x: 0
+  y: 60
+  z: 0
+  pitch: 0
+  yaw: 0

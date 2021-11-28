@@ -43,7 +43,7 @@ public class PurgeTask {
                         return false;
                     }
                     var player = Bukkit.getOfflinePlayer(uuid);
-                    if (player.isOnline()) {
+                    if (player.isOnline() || !player.hasPlayedBefore()) {
                         return false;
                     }
                     long currentTime = System.currentTimeMillis();

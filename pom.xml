@@ -53,7 +53,6 @@
         <!-- This allows to change between versions and snapshots. -->
         <build.version>1.1.0</build.version>
         <build.number>-LOCAL</build.number>
-        <sonar.projectKey>BentoBoxWorld_AutoIslandPurge</sonar.projectKey>
         <sonar.organization>bentobox-world</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>

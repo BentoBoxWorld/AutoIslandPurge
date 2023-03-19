@@ -35,8 +35,10 @@ enabled-modes:
 - bskyblock
 - aoneblock
 offline-days-until-purge: 7
+purge-island-member-size: 1
 check-islands-ticks: 300
 ticks-per-island-deleted: 10
+forced-spawn-location: false
 spawn-location:
   world: world
   x: 0
@@ -51,6 +53,9 @@ This is a list of the game modes that AutoIslandPurge will operate on.
 ### offline-days-until-purge
 The number of days a player must have been offline before the island is wiped.
 
+### purge-island-member-size
+The maximum number of members an island can have before it is not eligible for purging.
+
 ### check-islands-ticks
 How often islands should be checked to see if an island needs deleting. One tick is 1/20s.
 
@@ -59,3 +64,8 @@ How often an island should be deleted if there are more than one queued.
 
 ### spawn-location
 Where players should be teleported if their island was deleted while they were logged off.
+
+### forced-spawn-location
+If true, then players will be teleported to the spawn location if their island was deleted while they were logged off.
+If false, then they will instead be teleported to the location of the spawn island in the world they were in when they logged off.
+They are only teleported to the spawn location if that world does not have a spawn island.

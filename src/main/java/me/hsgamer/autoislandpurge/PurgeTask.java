@@ -53,6 +53,7 @@ public class PurgeTask {
                     long days = TimeUnit.MILLISECONDS.toDays(duration);
                     return days > instance.getSettings().getOfflineDays();
                 })
+                .filter(i -> !islands.contains(i))
                 .forEach(islands::add);
     }
 

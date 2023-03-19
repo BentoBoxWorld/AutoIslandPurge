@@ -9,6 +9,7 @@ import world.bentobox.bentobox.database.objects.Island;
 
 import java.util.Optional;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +37,7 @@ public class PurgeTask {
                 .filter(i -> !i.isSpawn())
                 .filter(i -> !i.getPurgeProtected())
                 .filter(Island::isOwned)
-                .filter(i -> i.getMembers().size() == 1)
+                .filter(i -> i.getMembers().size() <= instance.getSettings().getMaxMemberSize())
                 .filter(i -> {
                     var uuid = i.getOwner();
                     if (uuid == null) {
@@ -52,7 +53,6 @@ public class PurgeTask {
                     long days = TimeUnit.MILLISECONDS.toDays(duration);
                     return days > instance.getSettings().getOfflineDays();
                 })
-                .filter(i -> !islands.contains(i))
                 .forEach(islands::add);
     }
 
@@ -72,11 +72,13 @@ public class PurgeTask {
         ) {
             return;
         }
+
+        UUID owner = island.getOwner();
         String log = String.format(
                 "Island at %s (%s - %s) deleted",
                 island.getSpawnPoint(World.Environment.NORMAL),
-                island.getOwner(),
-                Optional.ofNullable(island.getOwner())
+                owner,
+                Optional.ofNullable(owner)
                         .map(Bukkit::getOfflinePlayer)
                         .map(OfflinePlayer::getName)
                         .orElse(null)

@@ -10,6 +10,7 @@ public class Settings {
     private final AutoIslandPurge addon;
     private final List<GameModeAddon> enabledGameModes = new ArrayList<>();
     private int offlineDays = 7;
+    private int maxMemberSize = 1;
     private long checkTicks = 300;
     private long deleteTicks = 10;
     private Location spawnLocation;
@@ -29,6 +30,7 @@ public class Settings {
                         .toList()
         );
         offlineDays = config.getInt("offline-days-until-purge", offlineDays);
+        maxMemberSize = config.getInt("purge-island-member-size", maxMemberSize);
         checkTicks = config.getLong("check-purge-ticks", checkTicks);
         deleteTicks = config.getLong("ticks-per-island-deleted", deleteTicks);
         try {
@@ -48,6 +50,10 @@ public class Settings {
 
     public int getOfflineDays() {
         return offlineDays;
+    }
+
+    public int getMaxMemberSize() {
+        return maxMemberSize;
     }
 
     public long getCheckTicks() {

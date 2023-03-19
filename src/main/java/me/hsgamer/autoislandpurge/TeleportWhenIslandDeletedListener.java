@@ -1,9 +1,12 @@
 package me.hsgamer.autoislandpurge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.Optional;
 
 public record TeleportWhenIslandDeletedListener(AutoIslandPurge instance) implements Listener {
     @EventHandler
@@ -17,9 +20,14 @@ public record TeleportWhenIslandDeletedListener(AutoIslandPurge instance) implem
         if (island.isPresent() && !island.get().isDeleted()) {
             return;
         }
-        var spawn = instance.getSettings().getSpawnLocation();
-        if (spawn != null) {
-            Bukkit.getScheduler().runTask(instance.getPlugin(), () -> player.teleport(spawn));
+
+        Location spawnLocation = Optional.ofNullable(location.getWorld())
+                .map(w -> instance.getIslands().getSpawnPoint(w))
+                .filter(l -> !instance.getSettings().isForcedSpawnLocation())
+                .orElseGet(() -> instance.getSettings().getSpawnLocation());
+
+        if (spawnLocation != null) {
+            Bukkit.getScheduler().runTask(instance.getPlugin(), () -> player.teleport(spawnLocation));
         }
     }
 }

@@ -3,6 +3,7 @@ offline-days-until-purge: 7
 purge-island-member-size: 1
 check-islands-ticks: 300
 ticks-per-island-deleted: 10
+forced-spawn-location: false
 spawn-location:
   world: world
   x: 0

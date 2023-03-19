@@ -14,6 +14,7 @@ public class Settings {
     private long checkTicks = 300;
     private long deleteTicks = 10;
     private Location spawnLocation;
+    private boolean forcedSpawnLocation;
 
     public Settings(AutoIslandPurge addon) {
         this.addon = addon;
@@ -42,6 +43,7 @@ public class Settings {
         } catch (Exception e) {
             // IGNORED
         }
+        forcedSpawnLocation = config.getBoolean("forced-spawn-location", forcedSpawnLocation);
     }
 
     public List<GameModeAddon> getEnabledGameModes() {
@@ -66,5 +68,9 @@ public class Settings {
 
     public Location getSpawnLocation() {
         return spawnLocation;
+    }
+
+    public boolean isForcedSpawnLocation() {
+        return forcedSpawnLocation;
     }
 }

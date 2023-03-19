@@ -18,12 +18,12 @@ It doesn't free up the world file size, just give some empty spaces for new isla
 5. Restart the server if you make a change
 
 ## Rules for purging
-An island will become eligble for deletion if the following is true:
+An island will become eligible for deletion if the following is true:
 
 1. The island is not the spawn island
 2. The island is not purge protected (you can protect islands from being purged with the purge protect admin command)
 3. The island must be owned
-4. It's a single-player island, no teams
+4. The member size of the island must be less than the number given in the config. Default 1 (a single-player island).
 5. The player has not been online for the number of days given in the config. Default 7. See below.
 
 ## Config

@@ -1,14 +1,13 @@
 package me.hsgamer.autoislandpurge;
 
 import org.bukkit.Location;
-import world.bentobox.bentobox.api.addons.GameModeAddon;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Settings {
     private final AutoIslandPurge addon;
-    private final List<GameModeAddon> enabledGameModes = new ArrayList<>();
+    private List<String> enabledGameModes = Collections.emptyList();
     private int offlineDays = 7;
     private int maxMemberSize = 1;
     private long checkTicks = 300;
@@ -21,15 +20,9 @@ public class Settings {
     }
 
     public void setup() {
-        enabledGameModes.clear();
         var config = addon.getConfig();
 
-        var gameModes = config.getStringList("enabled-modes");
-        enabledGameModes.addAll(
-                addon.getPlugin().getAddonsManager().getGameModeAddons().stream()
-                        .filter(gameModeAddon -> gameModes.contains(gameModeAddon.getDescription().getName()))
-                        .toList()
-        );
+        enabledGameModes = config.getStringList("enabled-modes");
         offlineDays = config.getInt("offline-days-until-purge", offlineDays);
         maxMemberSize = config.getInt("purge-island-member-size", maxMemberSize);
         checkTicks = config.getLong("check-purge-ticks", checkTicks);
@@ -46,7 +39,7 @@ public class Settings {
         forcedSpawnLocation = config.getBoolean("forced-spawn-location", forcedSpawnLocation);
     }
 
-    public List<GameModeAddon> getEnabledGameModes() {
+    public List<String> getEnabledGameModes() {
         return enabledGameModes;
     }
 

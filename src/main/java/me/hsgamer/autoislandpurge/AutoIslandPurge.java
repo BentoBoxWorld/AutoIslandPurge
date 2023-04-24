@@ -2,45 +2,30 @@ package me.hsgamer.autoislandpurge;
 
 import world.bentobox.bentobox.api.addons.Addon;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AutoIslandPurge extends Addon {
     private final Settings settings = new Settings(this);
-    private final List<PurgeTask> tasks = new ArrayList<>();
+    private final PurgeTask purgeTask = new PurgeTask(this);
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         settings.setup();
-        setupTasks();
+        purgeTask.setup();
 
         registerListener(new TeleportWhenIslandDeletedListener(this));
     }
 
     @Override
     public void onDisable() {
-        clearTasks();
+        purgeTask.cancel();
     }
 
     @Override
     public void onReload() {
-        clearTasks();
+        purgeTask.cancel();
         reloadConfig();
         settings.setup();
-        setupTasks();
-    }
-
-    private void clearTasks() {
-        tasks.forEach(PurgeTask::cancel);
-        tasks.clear();
-    }
-
-    private void setupTasks() {
-        settings.getEnabledGameModes().forEach(gameModeAddon -> {
-            tasks.add(new PurgeTask(this, gameModeAddon));
-            log("Auto-Purge will apply to " + gameModeAddon.getDescription().getName());
-        });
+        purgeTask.setup();
     }
 
     public Settings getSettings() {

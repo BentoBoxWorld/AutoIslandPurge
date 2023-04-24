@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
-import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.database.objects.Island;
 
 import java.util.Optional;
@@ -15,27 +14,21 @@ import java.util.concurrent.TimeUnit;
 
 public class PurgeTask {
     private final AutoIslandPurge instance;
-    private final GameModeAddon gameModeAddon;
     private final Queue<Island> islands = new ConcurrentLinkedQueue<>();
-    private final BukkitTask checkTask;
-    private final BukkitTask deleteTask;
+    private BukkitTask checkTask;
+    private BukkitTask deleteTask;
 
-    public PurgeTask(AutoIslandPurge instance, GameModeAddon gameModeAddon) {
+    public PurgeTask(AutoIslandPurge instance) {
         this.instance = instance;
-        this.gameModeAddon = gameModeAddon;
-
-        long checkTicks = instance.getSettings().getCheckTicks();
-        long deleteTicks = instance.getSettings().getDeleteTicks();
-
-        checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(instance.getPlugin(), this::checkIslands, checkTicks, checkTicks);
-        deleteTask = Bukkit.getScheduler().runTaskTimerAsynchronously(instance.getPlugin(), this::deleteOneIsland, deleteTicks, deleteTicks);
     }
 
     private void checkIslands() {
-        instance.getIslands().getIslands(gameModeAddon.getOverWorld())
+        instance.getIslands().getIslands()
                 .parallelStream()
+                .filter(i -> instance.getSettings().getEnabledGameModes().contains(i.getGameMode()))
                 .filter(i -> !i.isSpawn())
                 .filter(i -> !i.getPurgeProtected())
+                .filter(i -> i.getWorld().getEnvironment().equals(World.Environment.NORMAL))
                 .filter(Island::isOwned)
                 .filter(i -> i.getMembers().size() <= instance.getSettings().getMaxMemberSize())
                 .filter(i -> {
@@ -85,13 +78,22 @@ public class PurgeTask {
                         .orElse(null)
         );
         Bukkit.getScheduler().runTask(instance.getPlugin(), () -> {
-            gameModeAddon.getIslands().deleteIsland(island, true, null);
+            instance.getIslands().deleteIsland(island, true, null);
             instance.log(log);
         });
+    }
+
+    public void setup() {
+        long checkTicks = instance.getSettings().getCheckTicks();
+        long deleteTicks = instance.getSettings().getDeleteTicks();
+
+        checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(instance.getPlugin(), this::checkIslands, checkTicks, checkTicks);
+        deleteTask = Bukkit.getScheduler().runTaskTimerAsynchronously(instance.getPlugin(), this::deleteOneIsland, deleteTicks, deleteTicks);
     }
 
     public void cancel() {
         if (!checkTask.isCancelled()) checkTask.cancel();
         if (!deleteTask.isCancelled()) deleteTask.cancel();
+        islands.clear();
     }
 }

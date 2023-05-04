@@ -25,7 +25,7 @@ public class PurgeTask {
     private void checkIslands() {
         instance.getIslands().getIslands()
                 .parallelStream()
-                .filter(i -> instance.getSettings().getEnabledGameModes().contains(i.getGameMode()))
+                .filter(i -> instance.getSettings().isGameModeEnabled(i.getGameMode()))
                 .filter(i -> !i.isSpawn())
                 .filter(i -> !i.getPurgeProtected())
                 .filter(i -> i.getWorld().getEnvironment().equals(World.Environment.NORMAL))

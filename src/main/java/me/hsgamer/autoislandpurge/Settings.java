@@ -2,12 +2,12 @@ package me.hsgamer.autoislandpurge;
 
 import org.bukkit.Location;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Settings {
     private final AutoIslandPurge addon;
-    private List<String> enabledGameModes = Collections.emptyList();
+    private final List<String> enabledGameModes = new ArrayList<>();
     private int offlineDays = 7;
     private int maxMemberSize = 1;
     private long checkTicks = 300;
@@ -22,7 +22,8 @@ public class Settings {
     public void setup() {
         var config = addon.getConfig();
 
-        enabledGameModes = config.getStringList("enabled-modes");
+        enabledGameModes.clear();
+        config.getStringList("enabled-modes").forEach(s -> enabledGameModes.add(s.toLowerCase()));
         offlineDays = config.getInt("offline-days-until-purge", offlineDays);
         maxMemberSize = config.getInt("purge-island-member-size", maxMemberSize);
         checkTicks = config.getLong("check-purge-ticks", checkTicks);
@@ -41,6 +42,13 @@ public class Settings {
 
     public List<String> getEnabledGameModes() {
         return enabledGameModes;
+    }
+
+    public boolean isGameModeEnabled(String gameMode) {
+        if (gameMode == null) {
+            return false;
+        }
+        return enabledGameModes.contains(gameMode.toLowerCase());
     }
 
     public int getOfflineDays() {
